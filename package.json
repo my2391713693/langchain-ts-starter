@@ -27,6 +27,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@langchain/openai": "^1.1.1",
     "dotenv": "^16.0.3",
     "langchain": "^0.0.39",
     "tsup": "^6.7.0"

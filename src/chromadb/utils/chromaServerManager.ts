@@ -6,7 +6,7 @@ import { mkdir } from "node:fs/promises";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CHROMA_DATA_PATH = path.resolve(__dirname, "../../chroma_data");
+const CHROMA_DATA_PATH = path.resolve(__dirname, "../../../chroma_data");
 const CHROMA_PORT = process.env.CHROMA_PORT || "8000";
 const CHROMA_SERVER_URL =
   process.env.CHROMA_SERVER_URL || `http://localhost:${CHROMA_PORT}`;
@@ -56,7 +56,7 @@ async function checkChromaInstalled(): Promise<{
   }
 
   // 方法2: 检查项目虚拟环境中的 chromadb
-  const projectRoot = path.resolve(__dirname, "../..");
+  const projectRoot = path.resolve(__dirname, "../../..");
   const venvPythonPath = path.join(projectRoot, "venv", "bin", "python");
   try {
     const { existsSync } = await import("node:fs");
@@ -380,3 +380,4 @@ export async function getServerStatus(): Promise<{
     url: CHROMA_SERVER_URL
   };
 }
+

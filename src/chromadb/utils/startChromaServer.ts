@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CHROMA_DATA_PATH = path.resolve(__dirname, "../../chroma_data");
+const CHROMA_DATA_PATH = path.resolve(__dirname, "../../../chroma_data");
 const CHROMA_PORT = process.env.CHROMA_PORT || "8000";
 
 /**
@@ -48,3 +48,4 @@ export function startChromaServer(): Promise<void> {
     }, 2000);
   });
 }
+

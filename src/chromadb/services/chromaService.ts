@@ -73,7 +73,7 @@ export class ChromaService {
   async initialize(): Promise<void> {
     try {
       // 确保数据目录存在（用于 ChromaDB 服务器持久化）
-      const chromaDataPath = path.resolve(__dirname, "../../chroma_data");
+      const chromaDataPath = path.resolve(__dirname, "../../../chroma_data");
       await mkdir(chromaDataPath, { recursive: true });
 
       this.collection = await this.client.getOrCreateCollection({

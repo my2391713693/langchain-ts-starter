@@ -2,3 +2,6 @@ node_modules
 .env
 dist
 .turbo
+venv
+__pycache__
+*.pyc

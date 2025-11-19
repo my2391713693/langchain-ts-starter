@@ -14,7 +14,7 @@ if (!process.env.DASHSCOPE_API_KEY) {
 }
 
 // 使用阿里云百炼平台的Qwen模型
-export const model = new ChatOpenAI({
+export const qwenModal = new ChatOpenAI({
   model: "qwen-plus",
   apiKey: process.env.DASHSCOPE_API_KEY,
   configuration: {

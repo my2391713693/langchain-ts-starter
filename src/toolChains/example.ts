@@ -29,7 +29,7 @@ async function runToolChainExample() {
   // 2. 天气查询工具
   console.log("☀️ 使用天气查询工具:");
   try {
-    const weatherResult = await tools[1].call("北京");
+    const weatherResult = await tools[1].call("成都");
     console.log(`${weatherResult}\n`);
   } catch (error) {
     console.error("天气查询出错:", error);

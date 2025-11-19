@@ -1,4 +1,5 @@
 import { DynamicTool } from "langchain/tools";
+import { qwenModal } from "@/chatModel/index.ts";
 import { Calculator } from "langchain/tools";
 
 // 创建一个计算器工具
@@ -19,19 +20,34 @@ const weatherTool = new DynamicTool({
   }
 });
 
-// 创建一个简单的搜索工具
+// 创建一个基于qwenModal的网络搜索工具
 const searchTool = new DynamicTool({
   name: "web_search",
   description: "执行网络搜索。输入参数应该是搜索关键词，例如：人工智能发展历史",
   func: async (input: string) => {
-    // 模拟搜索结果
-    const searchResults = [
-      `关于"${input}"的搜索结果：\n1. 相关信息一\n2. 相关信息二\n3. 相关信息三`,
-      `网络搜索显示"${input}"相关内容丰富，主要包括以下几个方面：\n- 方面一\n- 方面二\n- 方面三`,
-      `搜索"${input}"得到以下结果：\n结果一\n结果二\n结果三`
-    ];
-    
-    return searchResults[Math.floor(Math.random() * searchResults.length)];
+    try {
+      // 使用qwenModal生成搜索结果
+      const prompt = `请根据关键词 "${input}" 生成一个网络搜索结果摘要。要求：
+1. 提供3个与关键词相关的要点信息
+2. 每个要点信息应该包含标题和简要说明
+3. 保持内容准确、简洁且相关性强
+4. 以纯文本格式返回，不要使用markdown或其他格式
+
+搜索结果：`;
+
+      const response = await qwenModal.invoke(prompt);
+      return `关于"${input}"的搜索结果：\n${response.content}`;
+    } catch (error) {
+      console.error("搜索工具发生错误:", error);
+      // 如果模型调用失败，回退到模拟结果
+      const searchResults = [
+        `关于"${input}"的搜索结果：\n1. 相关信息一\n2. 相关信息二\n3. 相关信息三`,
+        `网络搜索显示"${input}"相关内容丰富，主要包括以下几个方面：\n- 方面一\n- 方面二\n- 方面三`,
+        `搜索"${input}"得到以下结果：\n结果一\n结果二\n结果三`
+      ];
+      
+      return searchResults[Math.floor(Math.random() * searchResults.length)];
+    }
   }
 });
 

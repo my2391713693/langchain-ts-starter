@@ -64,7 +64,7 @@ const weatherTool = new DynamicTool({
   },
 });
 
-// 创建一个简单的网络搜索工具
+// 创建一个基于搜索引擎和大模型的智能搜索工具
 const searchTool = new DynamicTool({
   name: "web_search",
   description: "执行网络搜索。输入参数应该是搜索关键词，例如：人工智能发展历史",
@@ -92,24 +92,30 @@ const searchTool = new DynamicTool({
       // 提取搜索结果
       let searchResults = '';
       if (data.answerBox?.answer) {
-        searchResults = data.answerBox.answer;
+        searchResults = `答案：${data.answerBox.answer}`;
       } else if (data.organic?.length > 0) {
         // 整理前几个搜索结果
         const topResults = data.organic.slice(0, 5);
-        searchResults = topResults.map((item: any) => 
-          `标题: ${item.title}\n摘要: ${item.snippet}${item.link ? `\n链接: ${item.link}` : ''}`
+        searchResults = topResults.map((item: any, index: number) => 
+          `${index + 1}. ${item.title}\n   ${item.snippet}`
         ).join('\n\n');
       }
       
       if (!searchResults) {
-        return "未找到相关搜索结果。";
+        return `关于"${input}"没有找到有用的搜索结果。`;
       }
 
-      // 使用大模型整理和总结信息
-      const prompt = `请根据以下搜索结果，用中文回答问题"${input}"。请组织语言，提供清晰、准确且有条理的回答：\n\n${searchResults}`;
-      const llmResponse = await qwenModal.invoke(prompt);
+      // 使用大模型整理信息
+      const prompt = `请根据以下搜索结果，用中文整理并简洁地回答"${input}"。要求：
+1. 提取关键信息并组织成清晰的要点
+2. 保持内容准确，不要添加未提及的信息
+3. 回答应简洁明了，不超过200字
+
+搜索结果：
+${searchResults}`;
       
-      return llmResponse.content as string;
+      const llmResponse = await qwenModal.invoke(prompt);
+      return `关于"${input}"的搜索结果：\n${llmResponse.content as string}`;
     } catch (error: any) {
       return `搜索失败: ${error.message}`;
     }

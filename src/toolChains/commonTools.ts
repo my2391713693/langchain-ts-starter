@@ -10,13 +10,26 @@ const weatherTool = new DynamicTool({
   name: "weather_checker",
   description: "查询指定城市的天气情况。输入参数应该是城市名称，例如：北京",
   func: async (input: string) => {
-    // 模拟天气查询结果
-    const weatherConditions = ["晴天", "多云", "阴天", "小雨", "大雨", "雪"];
-    const temperatures = [20, 25, 30, 15, 10, 5];
-    const randomCondition = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
-    const randomTemperature = temperatures[Math.floor(Math.random() * temperatures.length)];
-    
-    return `城市: ${input}\n天气情况: ${randomCondition}\n温度: ${randomTemperature}°C`;
+    try {
+      // 使用qwenModal生成搜索结果
+      const prompt = `你是一个天气查询助手，请提供"${input}"城市的天气信息。
+要求按照以下JSON格式返回数据：
+{
+  "condition": "天气状况，如晴天、多云等",
+  "temperature": "温度数值，只需要数字，不需要单位"
+}
+
+严格按照这个格式返回，不要添加其他内容。`;
+
+      const response = await qwenModal.invoke(prompt);
+      const weatherData = JSON.parse(response.content.toString());
+      
+      // 按照指定格式返回
+      return `城市: ${input}\n天气情况: ${weatherData.condition}\n温度: ${weatherData.temperature}°C`;
+    } catch (error) {
+      console.error("天气工具发生错误:", error);
+      return "天气查询失败，请稍后再试。";
+    }
   }
 });
 
@@ -31,7 +44,7 @@ const searchTool = new DynamicTool({
 1. 提供3个与关键词相关的要点信息
 2. 每个要点信息应该包含标题和简要说明
 3. 保持内容准确、简洁且相关性强
-4. 以纯文本格式返回，不要使用markdown或其他格式
+4. 以纯文本格式返回，不要使用其他格式
 
 搜索结果：`;
 
@@ -40,13 +53,7 @@ const searchTool = new DynamicTool({
     } catch (error) {
       console.error("搜索工具发生错误:", error);
       // 如果模型调用失败，回退到模拟结果
-      const searchResults = [
-        `关于"${input}"的搜索结果：\n1. 相关信息一\n2. 相关信息二\n3. 相关信息三`,
-        `网络搜索显示"${input}"相关内容丰富，主要包括以下几个方面：\n- 方面一\n- 方面二\n- 方面三`,
-        `搜索"${input}"得到以下结果：\n结果一\n结果二\n结果三`
-      ];
-      
-      return searchResults[Math.floor(Math.random() * searchResults.length)];
+      return "网络搜索失败，请稍后再试。"
     }
   }
 });

@@ -17,6 +17,7 @@ if (!process.env.DASHSCOPE_API_KEY) {
 export const qwenModal = new ChatOpenAI({
   model: "qwen-plus",
   apiKey: process.env.DASHSCOPE_API_KEY,
+  temperature: 0.1,
   configuration: {
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
   }

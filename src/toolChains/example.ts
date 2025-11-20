@@ -38,7 +38,7 @@ async function runToolChainExample() {
   // 3. 网络搜索工具
   console.log("🔍 使用网络搜索工具:");
   try {
-    const searchResult = await tools[2].call("今天成都天气怎样");
+    const searchResult = await tools[2].call("请提供大模型相关的最新实践论文，并给出简要介绍与链接");
     console.log(`${searchResult}\n`);
   } catch (error) {
     console.error("网络搜索出错:", error);

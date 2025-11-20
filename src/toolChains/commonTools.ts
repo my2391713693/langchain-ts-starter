@@ -75,6 +75,7 @@ const searchTool = new DynamicTool({
         return "错误：未配置SERPER_API_KEY，请在.env文件中设置该环境变量。";
       }
 
+      // 使用搜索引擎获取信息
       const response = await axios.post(
         'https://google.serper.dev/search',
         { q: input },
@@ -87,15 +88,28 @@ const searchTool = new DynamicTool({
       );
 
       const data = response.data;
+      
+      // 提取搜索结果
+      let searchResults = '';
       if (data.answerBox?.answer) {
-        return data.answerBox.answer;
+        searchResults = data.answerBox.answer;
+      } else if (data.organic?.length > 0) {
+        // 整理前几个搜索结果
+        const topResults = data.organic.slice(0, 5);
+        searchResults = topResults.map((item: any) => 
+          `标题: ${item.title}\n摘要: ${item.snippet}${item.link ? `\n链接: ${item.link}` : ''}`
+        ).join('\n\n');
       }
       
-      if (data.organic?.length > 0) {
-        return data.organic[0].snippet;
+      if (!searchResults) {
+        return "未找到相关搜索结果。";
       }
+
+      // 使用大模型整理和总结信息
+      const prompt = `请根据以下搜索结果，用中文回答问题"${input}"。请组织语言，提供清晰、准确且有条理的回答：\n\n${searchResults}`;
+      const llmResponse = await qwenModal.invoke(prompt);
       
-      return "未找到相关搜索结果。";
+      return llmResponse.content as string;
     } catch (error: any) {
       return `搜索失败: ${error.message}`;
     }
